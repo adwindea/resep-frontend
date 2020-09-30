@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import AddResep from "./components/add-resep.component";
-import Resep from "./components/resep.component";
 import ResepList from "./components/resep-list.component";
 
 class App extends Component {
@@ -33,7 +32,6 @@ class App extends Component {
           <Switch>
             <Route exact path={["/", "/resep"]} component={ResepList} />
             <Route exact path="/add" component={AddResep} />
-            <Route path="/resep/:id" component={Resep} />
           </Switch>
         </div>
       </div>

@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import ResepDataService from "../services/resep.service";
+import axios from "axios";
 
 export default class AddResep extends Component {
     constructor(props) {
         super(props);
         this.onChangeTitle = this.onChangeTitle.bind(this);
         this.onChangeDescription = this.onChangeDescription.bind(this);
+        this.onChangeFile = this.onChangeFile.bind(this);
         this.saveResep = this.saveResep.bind(this);
         this.newResep = this.newResep.bind(this);
 
@@ -13,6 +15,9 @@ export default class AddResep extends Component {
             id: null,
             title: "",
             description: "", 
+            img: "", 
+
+            submitted: false
         };
     }
 
@@ -26,19 +31,34 @@ export default class AddResep extends Component {
             description: e.target.value
         });
     }
+    onChangeFile(e) {
+        this.setState({
+            img: e.target.files[0],
+        });
+    }
     saveResep() {
         var data = {
             title: this.state.title,
-            description: this.state.description
+            description: this.state.description,
         };
         ResepDataService.create(data)
         .then(response => {
             this.setState({
             id: response.data.id,
             title: response.data.title,
-            description: response.data.description
+            description: response.data.description,
+            submitted: true
             });
-            console.log(response.data);
+            const formFile = new FormData();
+            formFile.append('file', this.state.img);
+            formFile.append('imgname', this.state.img);
+            axios.post("http://localhost:8080/api/resep/upload", formFile, { 
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+            }).then(res => { // then print response status
+                console.log(res.statusText)
+             })
         })
         .catch(e => {
             console.log(e);
@@ -48,7 +68,9 @@ export default class AddResep extends Component {
         this.setState({
             id: null,
             title: "",
-            description: ""
+            description: "",
+            img: "",
+            submitted: false
         });
     }  
 
@@ -89,7 +111,17 @@ export default class AddResep extends Component {
                             name="description"
                         />
                         </div>
-            
+
+                        <div className="form-group">
+                        <label htmlFor="file">Image</label>
+                        <input 
+                            type="file" 
+                            name="file" 
+                            className="form-control-file border"
+                            onChange={this.onChangeFile}
+                        />
+                        </div>
+
                         <button onClick={this.saveResep} className="btn btn-success">
                         Submit
                         </button>
