@@ -37,32 +37,31 @@ export default class AddResep extends Component {
         });
     }
     saveResep() {
-        var data = {
-            title: this.state.title,
-            description: this.state.description,
-        };
-        ResepDataService.create(data)
-        .then(response => {
-            this.setState({
-            id: response.data.id,
-            title: response.data.title,
-            description: response.data.description,
-            submitted: true
+        const formFile = new FormData();
+        formFile.append('file', this.state.img);
+        axios.post("http://localhost:8080/api/resep/upload", formFile, { 
+            headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+        }).then(res => { // then print response status
+            var data = {
+                title: this.state.title,
+                description: this.state.description,
+                imgname: res.data.filename
+            };
+            ResepDataService.create(data)
+            .then(response => {
+                this.setState({
+                id: response.data.id,
+                title: response.data.title,
+                description: response.data.description,
+                submitted: true
+                });
+            })
+            .catch(e => {
+                console.log(e);
             });
-            const formFile = new FormData();
-            formFile.append('file', this.state.img);
-            formFile.append('imgname', this.state.img);
-            axios.post("http://localhost:8080/api/resep/upload", formFile, { 
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                  }
-            }).then(res => { // then print response status
-                console.log(res.statusText)
-             })
         })
-        .catch(e => {
-            console.log(e);
-        });
     }
     newResep() {
         this.setState({

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import ResepDataService from "../services/resep.service";
-import { Link } from "react-router-dom";
 
 export default class ResepsList extends Component {
   constructor(props) {
@@ -53,7 +52,7 @@ export default class ResepsList extends Component {
   }
 
   render() {
-    const { searchTitle, reseps, currentResep, currentIndex } = this.state;
+    const { searchTitle, reseps } = this.state;
 
     return (
       <div className="row">
